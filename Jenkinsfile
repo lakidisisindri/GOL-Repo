@@ -38,7 +38,7 @@ stages {
  
   stage('Unit Test Results') {
       steps {
-      junit '**/target/surefire-reports/TEST-*.xml'
+      junit '**/target/dsurefire-reports/TEST-*.xml'
       
      }
  }
