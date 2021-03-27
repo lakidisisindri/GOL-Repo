@@ -41,7 +41,7 @@ stages {
       
       }
  }
-  stage('Sonarqube') {
+  stage('sonarqube') {
     environment {
         scannerHome = tool 'sonarqube'
     }
@@ -62,7 +62,7 @@ stages {
  }
     stage('Deploy War') {
       steps {
-          //deploy adapters: [tomcat8(credentialsId: 'tomcat-cred', path: '', url: 'http://http://13.229.127.107:8080/')], contextPath: null, war: '**/*.war'
+          //deploy adapters: [tomcat8(credentialsId: 'tomcat-cred', path: '', url: 'http://http://172.31.22.177:8080/')], contextPath: null, war: '**/*.war'
           sh label: '', script: 'ansible-playbook deploy.yml'
       }
  }
@@ -72,7 +72,7 @@ post {
             archiveArtifacts 'gameoflife-web/target/*.war'
         }
         failure {
-            mail to:"raknas000@gmail.com", subject:"FAILURE: ${currentBuild.fullDisplayName}", body: "Build failed"
+            mail to:"lakidisisindri96@gmail.com", subject:"FAILURE: ${currentBuild.fullDisplayName}", body: "Build failed"
         }
     }       
 }
