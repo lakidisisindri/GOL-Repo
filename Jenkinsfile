@@ -42,7 +42,7 @@ stages {
       
      }
  }
- stage('Sonarqube') {
+ stage('sonarqube') {
     environment {
         def scannerHome = tool 'sonarqube';
     }
@@ -71,7 +71,7 @@ post {
             archiveArtifacts 'gameoflife-web/target/*.war'
         }
        failure {
-           mail to:"sisindrilakidi@gmail.com", subject:"FAILURE: ${currentBuild.fullDisplayName}", body: "Build failed"
+           mail to:"lakidisisindri96@gmail.com", subject:"FAILURE: ${currentBuild.fullDisplayName}", body: "Build failed"
         }
     }       
 }
