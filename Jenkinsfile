@@ -6,21 +6,21 @@ pipeline {
     }
 stages { 
      
- stage('Preparation') { 
-     steps {
-// for display purposes
+ //stage('Preparation') { 
+ //   steps {
+// for display purpose
 
       // Get some code from a GitHub repository
 
-      git 'https://github.com/lakidisisindri/hello-world-servlet.git'
+   //  git 'https://github.com/lakidisisindri/GOL-Repo.git'
 
       // Get the Maven tool.
      
  // ** NOTE: This 'M3' Maven tool must be configured
  
      // **       in the global configuration.   
-     }
-   }
+     //}
+   //}
 
    stage('Build') {
        steps {
@@ -35,34 +35,41 @@ stages {
 //}
    }
  
-  stage('Results') {
+  stage('Unit Test Results') {
       steps {
-      junit '**/target/surefire-reports/*.xml'
-      archiveArtifacts 'target/*.war'
+      junit '**/target/surefire-reports/TEST-*.xml'
+      
       }
  }
- stage('sonarqube') {
+  stage('sonarqube') {
     environment {
         scannerHome = tool 'sonarqube'
     }
     steps {
         withSonarQubeEnv('sonarqube') {
             sh "${scannerHome}/bin/sonar-scanner"
+            
         }
-  //     timeout(time: 10, unit: 'MINUTES') {
-  //     waitForQualityGate abortPipeline: true
+    //    timeout(time: 10, unit: 'MINUTES') {
+    //      waitForQualityGate abortPipeline: true
     //    }
     }
 }
      stage('Artifact upload') {
       steps {
-     nexusPublisher nexusInstanceId: '1234', nexusRepositoryId: 'releases', packages: [[$class: 'MavenPackage', mavenAssetList: [[classifier: '', extension: '', filePath:'HelloWorldServlet-Pipeline/target/helloworld.war']], mavenCoordinate: [artifactId: 'hello-world-servlet-example', groupId: 'com.geekcap.vmturbo', packaging: 'war', version: '$BUILD_NUMBER']]]
+     nexusPublisher nexusInstanceId: '1234', nexusRepositoryId: 'releases', packages: [[$class: 'MavenPackage', mavenAssetList: [[classifier: '', extension: '', filePath: 'gameoflife-web/target/gameoflife.war']], mavenCoordinate: [artifactId: 'gameoflife', groupId: 'com.wakaleo.gameoflife', packaging: 'war', version: '$BUILD_NUMBER']]]
+      }
+ }
+    stage('Deploy War') {
+      steps {
+          //deploy adapters: [tomcat8(credentialsId: 'tomcat-cred', path: '', url: 'http://http://172.31.21.217:8080/')], contextPath: null, war: '**/*.war'
+          sh label: '',
       }
  }
 }
 post {
         success {
-            mail to:"lakidisisindri96@gmail.com", subject:"SUCCESS: ${currentBuild.fullDisplayName}", body: "Build success"
+            archiveArtifacts 'gameoflife-web/target/*.war'
         }
         failure {
             mail to:"lakidisisindri96@gmail.com", subject:"FAILURE: ${currentBuild.fullDisplayName}", body: "Build failed"
